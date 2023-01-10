@@ -42,7 +42,7 @@ function loadTasks() {
         //додаємо елементу клас
         li.className = 'collection-item';
 
-        // ДОДАЄМО індекс до елементу в DOM моделі
+        //додаємо індекс до елементу в DOM
         li.dataset.id = index;
 
         //всередині елементу списку створюємо текстову ноду з описом завдання
@@ -80,11 +80,10 @@ function createTask(event) {
     const tasks = getAllTasks();
     const li = document.createElement('li');
     li.className = 'collection-item';
-    /*
-        ДАЄМО НОВОМУ ЕЛЕМЕНТУ id tasks.length, тому що додаємо в кінець списку 
-        і на даний момент останній ID буде length - 1. 
-        Тому наступний елемент буде мати порядковий номер length
-    */
+    
+    //даємо новому елементу id tasks.length, тому що додаємо в кінець списку 
+    //і на даний момент останній ID буде length - 1. 
+    //Тому наступний елемент буде мати порядковий номер length
     li.dataset.id = tasks.length;
     li.appendChild(document.createTextNode(taskInput.value)); //застовували створення для значення таскінпуту
     taskList.appendChild(li);
@@ -134,14 +133,27 @@ function storeTaskInLocalStorage(task) {
 //update some task
 function editTask(event) {
 
-    tasks = getAllTasks();
+    //вивантажуємо список тасків з локалсториджа в змінну
+    let tasks = getAllTasks();
 
+    //присвоюємо змінну для іконки
     let iconContainer = event.target.parentElement;
+
+    //присвоюємо змінну для визначення айді
     let id = iconContainer.parentElement.dataset.id;
+
+    
     if(iconContainer.classList.contains('update-item')) {
+        //присвоюємо змінну для вікна з інпутом редагування таски + повторюємо значення старої таски
         let updatedTask = window.prompt('редагувати задачу', tasks[id]);
-        console.log(updatedTask);
-        document.querySelector('[data-id=id]').innerHTML = updatedTask;
+
+        //виділяємо конкретну першу ноду для редагування, бо в нас текст завжди йде першим
+        //це для того, щоб редагований текст не витер все в списку, а залишив кнопки-іконки
+        iconContainer.parentElement.childNodes[0].nodeValue = updatedTask;
+
+        //оновлюємо елемент в локал сториджі
+        tasks[id] = updatedTask;
+        localStorage.setItem('tasks', JSON.stringify(tasks));
     };
 }; 
 
@@ -156,7 +168,7 @@ function removeTask(event) {
             //видаляємо цей елемент списку
             iconContainer.parentElement.remove();
 
-            //ОТРИМУЄМО id елемента З DOM моделі
+            //отримуємо id елемента З DOM дерева
             let id = iconContainer.parentElement.dataset.id;
             //викликаємо функцію, яка буде додавати завдання в локалсторидж
             removeTaskFromLocalStorage(id);
@@ -164,7 +176,7 @@ function removeTask(event) {
     };
 };
 
-// ПАРАМЕТРОМ У ФУНКЦІЮ ПЕРЕДАЄМО id як INDEX елементу
+//передаємо індекс id, як параметр для функції видалення з локал сториджа
 function removeTaskFromLocalStorage(id) {
     //оголошуємо змінну, яка буде використовуватись для списку завдань
     let tasks;
@@ -178,13 +190,8 @@ function removeTaskFromLocalStorage(id) {
     else {
         tasks = []
     };
-    // ВИДАЛЯЄМО ЕЛЕМЕНТ З ІНДЕКСОМ id
+    //видаляємо елемент з індексом id
     tasks.splice(id, 1);
-    // tasks.forEach(function(task, index) {
-    //     if(taskItem.textContent === task) {
-    //         tasks.splice(index, 1);
-    //     }
-    // })
 
     localStorage.setItem('tasks', JSON.stringify(tasks));
 };
@@ -222,15 +229,3 @@ function filterItems(event) {
         };
     });
 };
-
-// 2. **Додати можливість оновлювати окреме завдання**
-    
-//     Зробіть так аби юзер крім видалення окремого елементу мав ще й можливість редагувати текст окремого завдання.
-//     Для цього можете додати іконку з олівцем поруч з іконкою для видалення.
-//     Приклад елементу:
-    
-//     ```
-//      <i class="fa fa-edit"></i>
-//     ```
-    
-//     Для самого функціоналу можете використати вбудоване діалогове вікно ([https://developer.mozilla.org/en-US/docs/Web/API/Window/prompt](https://developer.mozilla.org/en-US/docs/Web/API/Window/prompt)) а також індекс елементу і методи масивів та приведення до масивів
