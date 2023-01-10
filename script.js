@@ -13,6 +13,7 @@ const taskInput = document.querySelector('.task-input');
 document.addEventListener('DOMContentLoaded', loadTasks);
 form.addEventListener('submit', createTask);
 taskList.addEventListener('click', removeTask);
+taskList.addEventListener('click', editTask);
 clearBtn.addEventListener('click', removeAllTasks);
 filter.addEventListener('keyup', filterItems);
 
@@ -33,7 +34,7 @@ function loadTasks() {
     };
 
     //для кожної задачі, яка є
-    tasks.forEach(function(task) {
+    tasks.forEach(function(task, index) {
 
         //створюємо елемент списку
         const li = document.createElement('li');
@@ -41,18 +42,31 @@ function loadTasks() {
         //додаємо елементу клас
         li.className = 'collection-item';
 
+        // ДОДАЄМО індекс до елементу в DOM моделі
+        li.dataset.id = index;
+
         //всередині елементу списку створюємо текстову ноду з описом завдання
         li.appendChild(document.createTextNode(task));
 
+        const updateElement = document.createElement('span');
+        updateElement.className = 'update-item';
+        updateElement.innerHTML = '  <i class="fa fa-edit"></i>';
+        li.appendChild(updateElement);
+
         const deleteElement = document.createElement('span');
         deleteElement.className = 'delete-item';
-        deleteElement.innerHTML = '<i class="fa fa-remove"></i>';
+        deleteElement.innerHTML = '  <i class="fa fa-remove"></i>';
         li.appendChild(deleteElement);
 
         //запихаємо елемент в список
         taskList.appendChild(li);
     });
 };
+
+// Не обовʼязкова функція. Простіше отримувати всі завдання
+function getAllTasks() {
+    return JSON.parse(localStorage.getItem('tasks'));
+}
 
 //create
 
@@ -63,24 +77,36 @@ function createTask(event) {
         event.preventDefault();
         return null;
     }
-        const li = document.createElement('li');
-        li.className = 'collection-item';
-        li.appendChild(document.createTextNode(taskInput.value)); //застовували створення для значення таскінпуту
-        taskList.appendChild(li);
+    const tasks = getAllTasks();
+    const li = document.createElement('li');
+    li.className = 'collection-item';
+    /*
+        ДАЄМО НОВОМУ ЕЛЕМЕНТУ id tasks.length, тому що додаємо в кінець списку 
+        і на даний момент останній ID буде length - 1. 
+        Тому наступний елемент буде мати порядковий номер length
+    */
+    li.dataset.id = tasks.length;
+    li.appendChild(document.createTextNode(taskInput.value)); //застовували створення для значення таскінпуту
+    taskList.appendChild(li);
 
-        //викликаємо функцію, яка буде додавати завдання в локалсторидж
-        storeTaskInLocalStorage(taskInput.value);
+    //викликаємо функцію, яка буде додавати завдання в локалсторидж
+    storeTaskInLocalStorage(taskInput.value);
 
-        const deleteElement = document.createElement('span');
-        deleteElement.className = 'delete-item';
-        deleteElement.innerHTML = '<i class="fa fa-remove"></i>';
-        li.appendChild(deleteElement);
+    const updateElement = document.createElement('span');
+    updateElement.className = 'update-item';
+    updateElement.innerHTML = '  <i class="fa fa-edit"></i>';
+    li.appendChild(updateElement);
 
-        //очищуємо вміст інпуту для створення завдання
-        taskInput.value = '';
+    const deleteElement = document.createElement('span');
+    deleteElement.className = 'delete-item';
+    deleteElement.innerHTML = '<i class="fa fa-remove"></i>';
+    li.appendChild(deleteElement);
 
-        //блокуємо дефолтну поведінку сабміта
-        event.preventDefault();
+    //очищуємо вміст інпуту для створення завдання
+    taskInput.value = '';
+    
+    //блокуємо дефолтну поведінку сабміта
+    event.preventDefault();
 };
 
 function storeTaskInLocalStorage(task) {
@@ -92,7 +118,7 @@ function storeTaskInLocalStorage(task) {
     if(localStorage.getItem('tasks')!== null) {
 
         //якщо є, то присвоюємо змінній
-        tasks = JSON.parse(localStorage.getItem('tasks'));
+        tasks = getAllTasks();
     }
     else {
         tasks = []
@@ -105,6 +131,21 @@ function storeTaskInLocalStorage(task) {
     localStorage.setItem('tasks', JSON.stringify(tasks));
 };
 
+//update some task
+function editTask(event) {
+
+    tasks = getAllTasks();
+
+    let iconContainer = event.target.parentElement;
+    let id = iconContainer.parentElement.dataset.id;
+    if(iconContainer.classList.contains('update-item')) {
+        let updatedTask = window.prompt('редагувати задачу', tasks[id]);
+        console.log(updatedTask);
+        document.querySelector('[data-id=id]').innerHTML = updatedTask;
+    };
+}; 
+
+
 //delete some task
 function removeTask(event) {
     let iconContainer = event.target.parentElement;
@@ -114,30 +155,36 @@ function removeTask(event) {
         if(confirm('Do you really want to remove task?')) {
             //видаляємо цей елемент списку
             iconContainer.parentElement.remove();
+
+            //ОТРИМУЄМО id елемента З DOM моделі
+            let id = iconContainer.parentElement.dataset.id;
             //викликаємо функцію, яка буде додавати завдання в локалсторидж
-            removeTaskFromLocalStorage(iconContainer.parentElement);
+            removeTaskFromLocalStorage(id);
         };
     };
 };
 
-function removeTaskFromLocalStorage (taskItem) {
+// ПАРАМЕТРОМ У ФУНКЦІЮ ПЕРЕДАЄМО id як INDEX елементу
+function removeTaskFromLocalStorage(id) {
     //оголошуємо змінну, яка буде використовуватись для списку завдань
     let tasks;
 
-    //перевіряємо, чи є у локал строриджі вже якісь дані завдань
+    //перевіряємо, чи є у локал сториджі вже якісь дані завдань
     if(localStorage.getItem('tasks')!== null) {
 
         //якщо є, то присвоюємо змінній
-        tasks = JSON.parse(localStorage.getItem('tasks'));
+        tasks = getAllTasks();
     }
     else {
         tasks = []
     };
-    tasks.forEach(function(task, index) {
-        if(taskItem.textContent === task) {
-            tasks.splice(index, 1);
-        }
-    })
+    // ВИДАЛЯЄМО ЕЛЕМЕНТ З ІНДЕКСОМ id
+    tasks.splice(id, 1);
+    // tasks.forEach(function(task, index) {
+    //     if(taskItem.textContent === task) {
+    //         tasks.splice(index, 1);
+    //     }
+    // })
 
     localStorage.setItem('tasks', JSON.stringify(tasks));
 };
@@ -176,5 +223,14 @@ function filterItems(event) {
     });
 };
 
-
-
+// 2. **Додати можливість оновлювати окреме завдання**
+    
+//     Зробіть так аби юзер крім видалення окремого елементу мав ще й можливість редагувати текст окремого завдання.
+//     Для цього можете додати іконку з олівцем поруч з іконкою для видалення.
+//     Приклад елементу:
+    
+//     ```
+//      <i class="fa fa-edit"></i>
+//     ```
+    
+//     Для самого функціоналу можете використати вбудоване діалогове вікно ([https://developer.mozilla.org/en-US/docs/Web/API/Window/prompt](https://developer.mozilla.org/en-US/docs/Web/API/Window/prompt)) а також індекс елементу і методи масивів та приведення до масивів
