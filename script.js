@@ -65,7 +65,7 @@ function loadTasks() {
 
 // Не обовʼязкова функція. Простіше отримувати всі завдання
 function getAllTasks() {
-    return JSON.parse(localStorage.getItem('tasks'));
+    return JSON.parse(localStorage.getItem('tasks')) ?? [];
 }
 
 //create
