@@ -85,9 +85,7 @@ function createTask(event) {
     //і на даний момент останній ID буде length - 1. 
     //Тому наступний елемент буде мати порядковий номер length
     li.dataset.id = tasks.length;
-
-    //застовуємо створення для значення таскінпуту
-    li.appendChild(document.createTextNode(taskInput.value)); 
+    li.appendChild(document.createTextNode(taskInput.value)); //застовували створення для значення таскінпуту
     taskList.appendChild(li);
 
     //викликаємо функцію, яка буде додавати завдання в локалсторидж
