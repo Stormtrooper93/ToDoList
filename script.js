@@ -98,7 +98,7 @@ function createTask(event) {
 
     const deleteElement = document.createElement('span');
     deleteElement.className = 'delete-item';
-    deleteElement.innerHTML = '<i class="fa fa-remove"></i>';
+    deleteElement.innerHTML = '  <i class="fa fa-remove"></i>';
     li.appendChild(deleteElement);
 
     //очищуємо вміст інпуту для створення завдання
@@ -145,7 +145,7 @@ function editTask(event) {
     
     if(iconContainer.classList.contains('update-item')) {
         //присвоюємо змінну для вікна з інпутом редагування таски + повторюємо значення старої таски
-        let updatedTask = window.prompt('редагувати задачу', tasks[id]);
+        let updatedTask = window.prompt('редагувати задачу', tasks[id].trim());
 
         //виділяємо конкретну першу ноду для редагування, бо в нас текст завжди йде першим
         //це для того, щоб редагований текст не витер все в списку, а залишив кнопки-іконки

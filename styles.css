@@ -1,15 +1,123 @@
-ul {
-    list-style: none;
-};
-
-body {
-    color: brown;
-    background-color: blue;
-};
-
-.container {
-    max-width: 960px;
-    width: auto;
+html {
+    font-family: Roboto;
 }
 
+ul {
+    list-style: none;
+}
 
+body{
+    background-image: url(https://i.ibb.co/52fZddK/drew-beamer-k-UHf-MW8awp-E-unsplash.jpg);
+    /* background-size: cover; */
+}
+
+h3 {
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 960px;
+    margin: 0 auto
+
+}
+
+.create-task-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px;
+
+}
+
+.filter-task-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px;
+}
+
+ul.collection {
+    padding: 0px;
+    text-align: left;
+}
+
+li {
+    text-align: left;
+    padding-top: 10px;
+    font-weight: 500;
+}
+
+input {
+    margin: 0 auto;
+    padding: 15px 40px;
+    border: solid #1a1a1a 3px;
+    border-radius: 20px;
+    background-color: rgb(245, 245, 245);
+    width: 60%;
+    transition: all 0.25s;
+}
+
+input::placeholder {
+    letter-spacing: 1px;
+    color: rgb(177, 177, 177);
+}
+
+button {
+    color: black;
+    text-decoration: none;
+    cursor: grab;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    transition: all 0.25s;
+}
+
+.btn {
+    position: relative;
+    top: 0px;
+    padding: 15px 25px;
+    border: solid #1a1a1a 3px;
+    border-radius: 20px;
+    margin: 10px;
+    box-shadow: 0px 10px 0px #1a1a1a;
+}
+
+.btn:hover {
+    top: 2px;
+    box-shadow: 0px 8px 0px #1a1a1a;
+}
+
+.btn:active {
+    transition: 100ms ease;
+    top: 8px;
+    box-shadow: 0px 2px 0px #1a1a1a;
+  }
+
+button.ylw {
+    background: #ffc300;
+}
+
+button.ylw:hover {
+    background: #efb300;
+}
+
+button.ylw:active {
+    background: #dfa300;
+}
+
+button.red {
+    background: #d22b2b;
+}
+
+button.red:hover {
+    background: #c21b2b;
+}
+
+button.red:active {
+    background: #b20b2b;
+}
